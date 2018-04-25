@@ -1,0 +1,32 @@
+{
+  "name": "did-uri",
+  "version": "1.0.0",
+  "description": "Decentralized Identity (DID) URI parser and formatter",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "keywords": [
+    "decentralized",
+    "identity",
+    "did",
+    "uri",
+    "parse",
+    "stringify",
+    "format"
+  ],
+  "author": "Joseph Werle <werle@littlstar.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "tape": "^4.9.0"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/littlstar/did-uri.git"
+  },
+  "bugs": {
+    "url": "https://github.com/littlstar/did-uri/issues"
+  },
+  "homepage": "https://github.com/littlstar/did-uri#readme"
+}
