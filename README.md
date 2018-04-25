@@ -1,7 +1,7 @@
 did-uri
 =======
 
-Decentralized Identity (DID) URI parser and formatter,
+Decentralized Identity (DID) URI parser and formatter.
 
 ## Abstract
 
