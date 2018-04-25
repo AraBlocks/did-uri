@@ -42,9 +42,16 @@ outputs:
 
 ### `parsed = did.parse(uri)`
 
-### `formated = did.format(uri)`
+Parses a given DID uri and returns an object similar to a `DID`
+instance.
 
-### `did = new DID(uri)`
+### `formated = did.format(obj)`
+
+Formats a given DID URI or object into a normalized formatted URI.
+
+### `did = new DID(uri [,base])`
+
+Parses and creates a new `DID` instance.
 
 #### `did.reference`
 
