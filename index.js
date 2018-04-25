@@ -9,6 +9,10 @@ const ALPHA = concat(
   array(26, (i) => 0x41 + i), // A-Z
 )
 
+function code(ch) {
+  return String(ch).charCodeAt(0)
+}
+
 function array(size, map) {
   return Array(size).fill(0).map((_, i) => map(i))
 }
@@ -17,12 +21,12 @@ function concat() {
   return Array.prototype.concat.apply([], arguments)
 }
 
-function code(ch) {
-  return String(ch).charCodeAt(0)
-}
-
 function inRange(value, start, end) {
   return value >= start && value <= end
+}
+
+function toLower(ch) {
+  return String(ch).toLowerCase()
 }
 
 // specific-idstring  = idstring *( ":" idstring )
@@ -150,7 +154,7 @@ function parse(uri) {
       ctx.reference = ''
       // parse protocol first to determine if URI is valid to continue parsing
       for (let j = 0; j < 4; ++j) {
-        ctx.reference += peek()
+        ctx.reference += toLower(peek())
         next()
       }
 
@@ -158,7 +162,7 @@ function parse(uri) {
       if ('did:' != ctx.reference) {
         throw new SyntaxError(`Invalid protocol (${ctx.reference}) specified.`)
       } else {
-        ctx.reference = uri
+        ctx.reference += uri.slice(4)
       }
     }
 
