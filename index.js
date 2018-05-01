@@ -216,7 +216,11 @@ function parse(uri) {
 
         // ensure next character is a valid path character before
         // proceeding to parse
-        if (false == isValidPathCharacter(peek())) {
+        if (
+          false == isValidPathCharacter(peek()) &&
+          false == isValidQueryCharacter(peek()) &&
+          false == isValidFragmentCharacter(peek())
+        ) {
           throw new SyntaxError(`Invalid character (${peek()}) in "path".`)
         }
 

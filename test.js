@@ -56,7 +56,7 @@ test("parse(uri) query", (t) => {
 })
 
 test("parse(uri) query with no path", (t) => {
-  const uri = 'did:method:identifier?thing=that'
+  const uri = 'did:method:identifier/?thing=that'
   const did = parse(uri)
   t.true(uri == did.reference)
   t.true('thing=that' == did.query)
@@ -73,6 +73,14 @@ test("parse(uri) fragment", (t) => {
 
 test("parse(uri) fragment with no path", (t) => {
   const uri = 'did:method:identifier#fragment=hash'
+  const did = parse(uri)
+  t.true(uri == did.reference)
+  t.true('fragment=hash' == did.fragment)
+  t.end()
+})
+
+test("parse(uri) fragment with no path but leading query prefix (?)", (t) => {
+  const uri = 'did:method:identifier?#fragment=hash'
   const did = parse(uri)
   t.true(uri == did.reference)
   t.true('fragment=hash' == did.fragment)
