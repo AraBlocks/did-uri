@@ -189,7 +189,7 @@ function parse(uri) {
       ctx.identifier = ''
 
       // break on EOL and path character prefix
-      while (null != peek() && '/' != peek()) {
+      while (null != peek() && '/' != peek() && '?' != peek() && '#' != peek()) {
         if (isValidIdentifierCharacter(peek())) {
           ctx.identifier += next()
         } else {
@@ -230,11 +230,13 @@ function parse(uri) {
     if (null == ctx.query) {
       ctx.query = ''
 
-      if ('?' == next()) {
+      if ('?' == peek()) {
         // ensure next character is a valid path character before
         // proceeding to parse
-        if (false == isValidPathCharacter(peek())) {
-          throw new SyntaxError(`Invalid character (${peek()}) in "query".`)
+        if (false == isValidPathCharacter(peek(1))) {
+          throw new SyntaxError(`Invalid character (${peek(1)}) in "query".`)
+        } else {
+          next()
         }
 
         while (null != peek() && '#' != peek()) {
@@ -250,11 +252,13 @@ function parse(uri) {
     if (null == ctx.fragment) {
       ctx.fragment = ''
 
-      if ('#' == next()) {
+      if ('#' == peek()) {
         // ensure next character is a valid path character before
         // proceeding to parse
-        if (false == isValidPathCharacter(peek())) {
-          throw new SyntaxError(`Invalid character (${peek()}) in "fragment".`)
+        if (false == isValidPathCharacter(peek(1))) {
+          throw new SyntaxError(`Invalid character (${peek(1)}) in "fragment".`)
+        } else {
+          next()
         }
 
         while (null != peek() && '#' != peek()) {

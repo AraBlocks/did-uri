@@ -55,8 +55,24 @@ test("parse(uri) query", (t) => {
   t.end()
 })
 
+test("parse(uri) query with no path", (t) => {
+  const uri = 'did:method:identifier?thing=that'
+  const did = parse(uri)
+  t.true(uri == did.reference)
+  t.true('thing=that' == did.query)
+  t.end()
+})
+
 test("parse(uri) fragment", (t) => {
   const uri = 'did:method:identifier/path/to/this?thing=that#fragment=hash'
+  const did = parse(uri)
+  t.true(uri == did.reference)
+  t.true('fragment=hash' == did.fragment)
+  t.end()
+})
+
+test("parse(uri) fragment with no path", (t) => {
+  const uri = 'did:method:identifier#fragment=hash'
   const did = parse(uri)
   t.true(uri == did.reference)
   t.true('fragment=hash' == did.fragment)
