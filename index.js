@@ -66,20 +66,24 @@ function isValidPathCharacter(ch) {
 // pchar       = unreserved / pct-encoded / sub-delims / ":" / "@"
 // unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
 // pct-encoded = "%" HEXDIG HEXDIG
+// gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
 // sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
 //             / "*" / "+" / "," / ";" / "="
 function isValidQueryCharacter(ch) {
-  return concat(ALPHA, DIGIT, code('/'), code('?')).indexOf(code(ch)) > -1
+  const gen = [':',  '/', '?', '#', '[', ']', '@'].map(code)
+  const sub = ['!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '='].map(code)
+  return concat(ALPHA, DIGIT, gen, sub).indexOf(code(ch)) > -1
 }
 
 // fragment    = *( pchar / "/" / "?" )
 // pchar       = unreserved / pct-encoded / sub-delims / ":" / "@"
 // unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
 // pct-encoded = "%" HEXDIG HEXDIG
+// gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
 // sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
 //             / "*" / "+" / "," / ";" / "="
 function isValidFragmentCharacter(ch) {
-  return concat(ALPHA, DIGIT, code('/'), code('?')).indexOf(code(ch)) > -1
+  return isValidQueryCharacter(ch)
 }
 
 /**
@@ -233,14 +237,14 @@ function parse(uri) {
       if ('?' == peek()) {
         // ensure next character is a valid path character before
         // proceeding to parse
-        if (false == isValidPathCharacter(peek(1))) {
+        if (false == isValidQueryCharacter(peek(1))) {
           throw new SyntaxError(`Invalid character (${peek(1)}) in "query".`)
         } else {
           next()
         }
 
         while (null != peek() && '#' != peek()) {
-          if (isValidPathCharacter(peek())) {
+          if (isValidQueryCharacter(peek())) {
             ctx.query += next()
           } else {
             throw new SyntaxError(`Invalid character (${peek()}) in "query".`)
@@ -255,14 +259,14 @@ function parse(uri) {
       if ('#' == peek()) {
         // ensure next character is a valid path character before
         // proceeding to parse
-        if (false == isValidPathCharacter(peek(1))) {
+        if (false == isValidFragmentCharacter(peek(1))) {
           throw new SyntaxError(`Invalid character (${peek(1)}) in "fragment".`)
         } else {
           next()
         }
 
         while (null != peek() && '#' != peek()) {
-          if (isValidPathCharacter(peek())) {
+          if (isValidFragmentCharacter(peek())) {
             ctx.fragment += next()
           } else {
             throw new SyntaxError(`Invalid character (${peek()}) in "fragment".`)

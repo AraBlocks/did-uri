@@ -100,12 +100,13 @@ test("format(obj)", (t) => {
 })
 
 test("new DID(uri)", (t) => {
-  const uri = 'did:method:identifier/path/to/this?thing=that#fragment=hash'
+  const uri = 'did:method:identifier/path/to/this?thing=that&nested[property]=this#fragment=hash'
   const did = new DID(uri)
   t.true(uri == did.reference)
   t.true('method' == did.method)
   t.true('identifier' == did.identifier)
-  t.true('thing=that' == did.query)
+  t.true('thing=that&nested[property]=this' == did.query)
+  t.true('this' == did.queryParameters.nested.property)
   t.true('fragment=hash' == did.fragment)
   t.true(format(parse(uri)) == String(did))
   t.end()
