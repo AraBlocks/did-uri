@@ -64,10 +64,10 @@ test("parse(uri) query with no path", (t) => {
 })
 
 test("parse(uri) fragment", (t) => {
-  const uri = 'did:method:identifier/path/to/this?thing=that#fragment=hash'
+  const uri = 'did:method:identifier/path/to/this?thing=that.foo#fragment=hash.foo'
   const did = parse(uri)
   t.true(uri == did.reference)
-  t.true('fragment=hash' == did.fragment)
+  t.true('fragment=hash.foo' == did.fragment)
   t.end()
 })
 
