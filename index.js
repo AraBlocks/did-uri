@@ -1,7 +1,7 @@
 'use strict'
 
 const url = require('url')
-const qs = require('querystring')
+const qs = require('qs')
 
 const DIGIT = array(10, (i) => 0x30 + i)
 const ALPHA = concat(
@@ -105,12 +105,15 @@ class DID {
     this.path = null
     this.fragment = null
     this.query = null
+
     this.queryParameters = null
+    this.fragmentParameters = null
 
     Object.seal(this)
     Object.assign(this, parse(uri))
 
     this.queryParameters = qs.parse(this.query)
+    this.fragmentParameters = qs.parse(this.fragment)
   }
 
   toString() { return format(this) }

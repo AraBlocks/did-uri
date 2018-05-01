@@ -20,7 +20,9 @@
   "devDependencies": {
     "tape": "^4.9.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "qs": "^6.5.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/littlstar/did-uri.git"

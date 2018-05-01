@@ -86,6 +86,10 @@ The `query` (?) component of the URI.
 
 The `query` string component of the URI parsed into an object.
 
+#### `did.fragmentParameters`
+
+The `fragment` string component of the URI parsed into an object.
+
 ## See Also
 
 * [Decentralized Identity Spec](https://github.com/w3c-ccg/did-spec)
