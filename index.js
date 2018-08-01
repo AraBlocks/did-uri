@@ -46,6 +46,9 @@ function isValidIdentifierCharacter(ch) {
 // method     = 1*methodchar
 // methodchar = %x61-7A / DIGIT
 function isValidMethodCharacter(ch) {
+  if (!ch) { 
+    return false
+  }
   return (
     inRange(code(ch), 0x30, 0x39) ||
     inRange(code(ch), 0x61, 0x7a)
@@ -340,9 +343,23 @@ function format(obj) {
   return uri
 }
 
+function hasMethod(uri) {
+  if ('string' != typeof uri) {
+    throw new TypeError("did.hasMethod: Expecting uri to be a string.")
+  }
+
+  try {
+    uri = parse(uri)
+  } catch (err) {
+    return false
+  }
+  return Boolean(uri.method)
+}
+
 module.exports = {
   normalize,
   format,
   parse,
   DID,
+  hasMethod
 }
