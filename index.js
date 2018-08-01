@@ -33,6 +33,9 @@ function toLower(ch) {
 // idstring           = 1*idchar
 // idchar             = ALPHA / DIGIT / "." / "-"
 function isValidIdentifierCharacter(ch) {
+  if (!ch) { 
+    return false
+  }
   return (
     0x2d == code(ch) || // '-'
     0x2e == code(ch) || // '.'
@@ -46,6 +49,9 @@ function isValidIdentifierCharacter(ch) {
 // method     = 1*methodchar
 // methodchar = %x61-7A / DIGIT
 function isValidMethodCharacter(ch) {
+  if (!ch) { 
+    return false
+  }
   return (
     inRange(code(ch), 0x30, 0x39) ||
     inRange(code(ch), 0x61, 0x7a)
@@ -58,6 +64,9 @@ function isValidMethodCharacter(ch) {
 // sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
 //             / "*" / "+" / "," / ";" / "="
 function isValidPathCharacter(ch) {
+  if (!ch) { 
+    return false
+  }
   const sub = ['!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '='].map(code)
   return concat(ALPHA, DIGIT, sub, code(':'), code('@')).indexOf(code(ch)) > -1
 }
@@ -70,6 +79,9 @@ function isValidPathCharacter(ch) {
 // sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
 //             / "*" / "+" / "," / ";" / "="
 function isValidQueryCharacter(ch) {
+  if (!ch) { 
+    return false
+  }
   const gen = [':',  '/', '?', '#', '[', ']', '@'].map(code)
   const sub = ['!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '='].map(code)
   return concat(ALPHA, DIGIT, gen, sub, code('.')).indexOf(code(ch)) > -1
