@@ -1,4 +1,4 @@
-const { normalize, format, parse, DID } = require('./')
+const { normalize, format, parse, DID, hasMethod } = require('./')
 const test = require('tape')
 
 test("normalize(uri) throws", (t) => {
@@ -140,5 +140,18 @@ test("DID#toString()", (t) => {
 })
 
 test("DID#toJSON()", (t) => {
+  t.end()
+})
+
+test("hasMethod(uri) throws", (t) => {
+  t.throws(() => hasMethod(1234), TypeError)
+  t.throws(() => hasMethod({ }), TypeError)
+  t.end()
+})
+
+test("hasMethod(uri)", (t) => {
+  t.true(true == hasMethod('did:ara:1234'))
+  t.true(false == hasMethod('did::1234'))
+  t.true(false == hasMethod('1234'))
   t.end()
 })
