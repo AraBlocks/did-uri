@@ -1,6 +1,5 @@
 'use strict'
 
-const url = require('url')
 const qs = require('qs')
 
 const DIGIT = array(10, (i) => 0x30 + i)
@@ -324,7 +323,6 @@ function normalize(uri) {
 }
 
 function format(obj) {
-
   if ('string' == typeof obj) {
     obj = parse(obj)
   } else if (!obj || 'object' != typeof obj || Array.isArray(obj)) {
