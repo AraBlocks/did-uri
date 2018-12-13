@@ -83,7 +83,8 @@ function isValidQueryCharacter(ch) {
   }
   const gen = [':',  '/', '?', '#', '[', ']', '@'].map(code)
   const sub = ['!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '='].map(code)
-  return concat(ALPHA, DIGIT, gen, sub, code('.')).indexOf(code(ch)) > -1
+  const pct = ['%', '-', '_', '~'].map(code)
+  return concat(ALPHA, DIGIT, gen, sub, pct, code('.')).indexOf(code(ch)) > -1
 }
 
 // fragment    = *( pchar / "/" / "?" )
