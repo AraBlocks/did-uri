@@ -320,6 +320,16 @@ function normalize(uri) {
   uri = uri.replace(/\n|\r/g, '')
   // normalize' did://'
   uri = uri.replace(/^did:\/\//g, 'did:')
+
+  // prepend `did:?`
+  if (false == /^did:/.test(uri)) {
+    if (/^:/.test(uri)) {
+      uri = `did${uri}`
+    } else {
+      uri = `did:${uri}`
+    }
+  }
+
   return uri
 }
 
