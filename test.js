@@ -13,6 +13,8 @@ test("normalize(uri)", (t) => {
   t.true('did:method:identifier' == normalize('did://method:identifier'))
   t.true('did:method:identifier' == normalize('   did://method:identifier\n'))
   t.true('did:method:identifier' == normalize(parse('did://method:identifier')))
+  t.true('did:method:identifier' == normalize(parse('method:identifier')))
+  t.true('did:method:identifier' == normalize(parse(':method:identifier')))
   t.end()
 })
 
