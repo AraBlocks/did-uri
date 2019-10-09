@@ -102,6 +102,27 @@ function isValidFragmentCharacter(ch) {
   return isValidQueryCharacter(ch)
 }
 
+// param       = param-name [ "=" param-value ]
+// param-name  = 1*param-char
+// param-value = *param-char
+// param-char  = ALPHA / DIGIT / "." / "-" / "_" / ":" / pct-encoded
+function isValidParamCharacter(ch) {
+  if (!ch) {
+    return false
+  }
+
+  return (
+    0x2e == code(ch) || // '.'
+    0x2d == code(ch) || // '-'
+    0x5f == code(ch) || // '_'
+    0x3a == code(ch) || // ':'
+    inRange(code(ch), 0x30, 0x39) || // 0-9 (DIGIT)
+    inRange(code(ch), 0x61, 0x7a) || // a-z (ALPHA)
+    inRange(code(ch), 0x41, 0x5a) ||  // A-Z (ALPHA)
+    -1 !== ['%', '-', '_', '~'].map(code).indexOf(ch) // pct-encoded
+  )
+}
+
 /**
  * The `DID` represents an object class similar to the
  * `URL` class exported by the `url` module. This object is
@@ -125,15 +146,60 @@ class DID {
     this.path = null
     this.fragment = null
     this.query = null
+    this.param = null
 
+    this.parameters = null
     this.queryParameters = null
     this.fragmentParameters = null
 
     Object.seal(this)
     Object.assign(this, parse(uri))
 
-    this.queryParameters = qs.parse(this.query)
-    this.fragmentParameters = qs.parse(this.fragment)
+    this.parameters = parseParam(this.param)
+    this.queryParameters = Object.seal(Object.freeze(qs.parse(this.query)))
+    this.fragmentParameters = Object.seal(Object.freeze(qs.parse(this.fragment)))
+
+    function parseParam(param) {
+      if (!param) {
+        return {}
+      }
+
+      const result = {}
+      const params = param.split(';').filter(Boolean).map((p) => p.split('='))
+      const values = params.map((tuple) => tuple[1])
+      const keys = params.map((tuple) => tuple[0])
+
+      for (let i = 0; i< params.length; ++i) {
+        const raw = undefined === values[i] ? true : values[i]
+        const key = keys[i]
+        const parts = key.split('.')
+        const depth = parts.length
+        let value = raw
+
+        if ('string' === typeof value) {
+          try {
+            value = JSON.parse(value)
+          } catch (err) {
+            value = raw
+          }
+        }
+
+        if (depth > 1) {
+          let scope = result
+          const p = parts.pop()
+          for (const k of parts) {
+            scope[k] = scope[k] || {}
+            scope = scope[k]
+          }
+
+          scope[p] = value
+        } else {
+          result[key] = value
+        }
+      }
+
+      return Object.freeze(Object.seal(result))
+    }
   }
 
   toString() { return format(this) }
@@ -167,6 +233,9 @@ function parse(uri) {
 
     // https://tools.ietf.org/html/rfc3986
     query: null,
+
+    // https://w3c-ccg.github.io/did-spec/#method-specific-did-parameter-names
+    param: null,
   }
 
   const len = uri.length
@@ -209,7 +278,8 @@ function parse(uri) {
       ctx.identifier = ''
 
       // break on EOL and path character prefix
-      while (null != peek() && '/' != peek() && '?' != peek() && '#' != peek()) {
+      const breaks = [ '/', '?', '#', ';' ]
+      while (null != peek() && -1 == breaks.indexOf(peek())) {
         if (isValidIdentifierCharacter(peek())) {
           ctx.identifier += next()
         } else {
@@ -221,6 +291,27 @@ function parse(uri) {
     if (null == ctx.did) {
       if (ctx.method && ctx.identifier) {
         ctx.did = `did:${ctx.method}:${ctx.identifier}`
+      }
+    }
+
+    if (null == ctx.param) {
+      ctx.param = ''
+
+      if (';' == peek()) {
+        ctx.param += next()
+        if (false == isValidParamCharacter(peek())) {
+          throw new SyntaxError(`Invalid character (${peek()}) in "param".`)
+        }
+
+        // break on EOL, query search prefix, and hash fragment prefix
+        const breaks = [ '/', '?', '#' ]
+        while (null != peek() && -1 == breaks.indexOf(peek())) {
+          if (';' == peek() || '=' == peek() || isValidParamCharacter(peek())) {
+            ctx.param += next()
+          } else {
+            throw new SyntaxError(`Invalid character (${peek()}) in "param".`)
+          }
+        }
       }
     }
 
@@ -347,6 +438,10 @@ function format(obj) {
   }
 
   let uri = obj.did
+
+  if (obj.param && 'string' == typeof obj.param) {
+    uri += obj.param
+  }
 
   if (obj.path && 'string' == typeof obj.path) {
     uri += obj.path
