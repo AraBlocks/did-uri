@@ -35,7 +35,8 @@ outputs:
   identifier: '68656c6c6f',
   path: '/music',
   fragment: '',
-  query: 'key=mk706c6179206d65' }
+  query: 'key=mk706c6179206d65',
+  param: '' }
 ```
 
 ## API
@@ -70,6 +71,10 @@ The `method` component of the URI.
 
 The `identifier` component of the URI.
 
+#### `did.param`
+
+The `param` (;) component of the URI.
+
 #### `did.path`
 
 The `path` component of the URI.
@@ -81,6 +86,10 @@ The `fragment` (#) component of the URI.
 #### `did.query`
 
 The `query` (?) component of the URI.
+
+#### `did.parameters`
+
+The `param` string component of the URI parsed into an object.
 
 #### `did.queryParameters`
 
