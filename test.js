@@ -89,6 +89,15 @@ test("parse(uri) fragment with no path but leading query prefix (?)", (t) => {
   t.end()
 })
 
+test("parse(uri) param", (t) => {
+  const param = ';foo:bar=baz;service=thing;o.key=123;o.value=456'
+  const uri = `did:method:identifier${param}/path/to/this?thing=that`
+  const did = parse(uri)
+  t.true(uri == did.reference)
+  t.true(param == did.param)
+  t.end()
+})
+
 test("format(obj) throws", (t) => {
   t.throws(() => format(), TypeError)
   t.throws(() => format(true), TypeError)
@@ -110,7 +119,7 @@ test("format(obj)", (t) => {
 })
 
 test("new DID(uri)", (t) => {
-  const uri = 'did:method:identifier/path/to/this?thing=that&nested[property]=this#fragment=hash'
+  const uri = 'did:method:identifier;init_param;param=value;boolean=true;number=123;object.key=hello;object.value=world/path/to/this?thing=that&nested[property]=this#fragment=hash'
   const did = new DID(uri)
   t.true(uri == did.reference)
   t.true('method' == did.method)
@@ -118,6 +127,12 @@ test("new DID(uri)", (t) => {
   t.true('thing=that&nested[property]=this' == did.query)
   t.true('this' == did.queryParameters.nested.property)
   t.true('fragment=hash' == did.fragment)
+  t.true('value' == did.parameters.param)
+  t.true(true == did.parameters.init_param)
+  t.true(true == did.parameters.boolean)
+  t.true(123 == did.parameters.number)
+  t.true('hello' == did.parameters.object.key)
+  t.true('world' == did.parameters.object.value)
   t.true(format(parse(uri)) == String(did))
   t.end()
 })
@@ -133,7 +148,7 @@ test("new DID(uri) throws", (t) => {
 })
 
 test("DID#toString()", (t) => {
-  const uri = 'did:method:identifier/path/to/this?thing=that#fragment=hash'
+  const uri = 'did:method:identifier;service=this;value=12;param=true;o.a=1;o.b=3/path/to/this?thing=that#fragment=hash'
   const did = new DID(uri)
   t.true(uri == did.toJSON())
   t.true(`"${uri}"` == JSON.stringify(did))
