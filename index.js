@@ -30,13 +30,14 @@ function toLower(ch) {
 
 // specific-idstring  = idstring *( ":" idstring )
 // idstring           = 1*idchar
-// idchar             = ALPHA / DIGIT / "." / "-"
+// idchar             = ALPHA / DIGIT / "." / "-" / "_"
 function isValidIdentifierCharacter(ch) {
   if (!ch) {
     return false
   }
 
   return (
+    0x5f == code(ch) || // '_'
     0x2d == code(ch) || // '-'
     0x2e == code(ch) || // '.'
     0x3a == code(ch) || // ':'
