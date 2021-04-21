@@ -128,6 +128,11 @@ function isValidParamCharacter(ch) {
  * serializable.
  */
 class DID {
+
+  static from(uri) {
+    return new this(format(uri))
+  }
+
   constructor(uri, base) {
     if (base && 'string' == typeof base) {
       if ('/' != uri[0]) {
