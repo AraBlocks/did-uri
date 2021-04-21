@@ -437,11 +437,19 @@ function format(obj) {
     obj = parse(obj)
   } else if (!obj || 'object' != typeof obj || Array.isArray(obj)) {
     throw new TypeError("did.format: Expecting object.")
-  } else if (!obj.did || 'string' != typeof obj.did) {
-    throw new TypeError("did.format: Expecting 'did' string in object.")
+  } else if (!obj.method && !obj.identifier && (!obj.did || 'string' != typeof obj.did)) {
+    throw new TypeError(
+      "did.format: Expecting 'did' string in object or 'method' and 'identifier' to be defined."
+    )
   }
 
-  let uri = obj.did
+  let uri = ''
+
+  if (obj.did) {
+    uri += obj.did
+  } else if (obj.method && obj.identifier) {
+    uri += `did:${obj.method}:${obj.identifier}`
+  }
 
   if (obj.param && 'string' == typeof obj.param) {
     uri += obj.param
