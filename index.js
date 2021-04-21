@@ -1,5 +1,3 @@
-'use strict'
-
 const qs = require('qs')
 
 const DIGIT = array(10, (i) => 0x30 + i)
@@ -205,7 +203,7 @@ class DID {
 
   toString() { return format(this) }
   toJSON() { return format(this) }
-  valuef() { return format(this) }
+  valueOf() { return format(this) }
 }
 
 function parse(uri) {
