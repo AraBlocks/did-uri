@@ -459,9 +459,9 @@ function format(obj) {
   return uri
 }
 
-module.exports = {
+module.exports = Object.assign(DID, {
   normalize,
   format,
   parse,
   DID,
-}
+})
